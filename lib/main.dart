@@ -106,8 +106,7 @@ class _CalendarPresentationPageState extends State<CalendarPresentationPage>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      final isMobile = MediaQuery.sizeOf(context).shortestSide < 600;
-      if (isMobile && _useGyro) _startGyro();
+      if (_useGyro) _startGyro();
     });
   }
 
@@ -168,8 +167,7 @@ class _CalendarPresentationPageState extends State<CalendarPresentationPage>
 
   void _resumeBackground() {
     if (!mounted) return;
-    final isMobile = MediaQuery.sizeOf(context).shortestSide < 600;
-    if (_useGyro && isMobile && !_mouseActive) {
+    if (_useGyro && !_mouseActive) {
       _startGyro();
     }
     if (_isPlaying) {
@@ -199,8 +197,7 @@ class _CalendarPresentationPageState extends State<CalendarPresentationPage>
     setState(() {
       _useGyro = !_useGyro;
       if (_useGyro) {
-        final isMobile = MediaQuery.sizeOf(context).shortestSide < 600;
-        if (isMobile) _startGyro();
+        _startGyro();
       } else {
         _stopGyro();
         if (!_mouseActive) _tilt.value = Offset.zero;
