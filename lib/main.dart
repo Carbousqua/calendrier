@@ -114,9 +114,19 @@ class _CalendarPresentationPageState extends State<CalendarPresentationPage>
     super.didChangeDependencies();
     if (!_precached) {
       _precached = true;
-      for (final m in calendarMonths) {
-        precacheImage(getMonthImage(m), context);
-      }
+      _precacheAround(_currentIndex);
+    }
+  }
+
+  void _precacheAround(int index) {
+    final count = calendarMonths.length;
+    final indicesToCache = {
+      index,
+      (index + 1) % count,
+      (index - 1 + count) % count,
+    };
+    for (final i in indicesToCache) {
+      precacheImage(getMonthImage(calendarMonths[i]), context);
     }
   }
 
@@ -218,6 +228,7 @@ class _CalendarPresentationPageState extends State<CalendarPresentationPage>
       _showHint = false;
     });
     _centerChip(i);
+    _precacheAround(i);
   }
 
   void _centerChip(int i) {
