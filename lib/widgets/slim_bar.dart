@@ -23,7 +23,7 @@ class SlimBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 4, 12, 8),
+      padding: const EdgeInsets.fromLTRB(14, 4, 14, 8),
       child: Row(
         children: [
           CircleButton(

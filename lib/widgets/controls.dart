@@ -16,33 +16,56 @@ class MonthTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.surfaceAlt.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: AppColors.gold.withValues(alpha: 0.3)),
+        border: Border.all(
+          color: AppColors.glassBorder,
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.royalBlue.withValues(alpha: 0.25),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+          BoxShadow(
+            color: AppColors.gold.withValues(alpha: 0.08),
+            blurRadius: 12,
+          ),
+        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.event, size: 16, color: AppColors.goldLight),
+          const Icon(Icons.event_note_rounded, size: 18, color: AppColors.goldLight),
           const SizedBox(width: 8),
           Text(
             currentMonth.name.toUpperCase(),
             style: const TextStyle(
+              fontFamily: 'serif',
               fontSize: 15,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 2.0,
-              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 2.2,
+              color: AppColors.offWhite,
             ),
           ),
-          const SizedBox(width: 10),
-          Text(
-            '${currentIndex + 1} / 12',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: AppColors.goldLight.withValues(alpha: 0.8),
+          const SizedBox(width: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            decoration: BoxDecoration(
+              color: AppColors.gold.withValues(alpha: 0.18),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.gold.withValues(alpha: 0.4)),
+            ),
+            child: Text(
+              '${currentIndex + 1} / 12',
+              style: const TextStyle(
+                fontSize: 11.5,
+                fontWeight: FontWeight.w700,
+                color: AppColors.goldLight,
+              ),
             ),
           ),
         ],
@@ -73,8 +96,13 @@ class Controls extends StatelessWidget {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircleButton(icon: Icons.arrow_back_ios_new_rounded, tooltip: 'Mois précédent', onTap: onPrevious, size: 54),
-          const SizedBox(width: 18),
+          CircleButton(
+            icon: Icons.arrow_back_ios_new_rounded,
+            tooltip: 'Mois précédent',
+            onTap: onPrevious,
+            size: 54,
+          ),
+          const SizedBox(width: 20),
           CircleButton(
             icon: isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
             tooltip: isPlaying ? 'Arrêter' : 'Défilement auto',
@@ -82,8 +110,13 @@ class Controls extends StatelessWidget {
             size: 64,
             filled: isPlaying,
           ),
-          const SizedBox(width: 18),
-          CircleButton(icon: Icons.arrow_forward_ios_rounded, tooltip: 'Mois suivant', onTap: onNext, size: 54),
+          const SizedBox(width: 20),
+          CircleButton(
+            icon: Icons.arrow_forward_ios_rounded,
+            tooltip: 'Mois suivant',
+            onTap: onNext,
+            size: 54,
+          ),
         ],
       );
     }
@@ -91,11 +124,23 @@ class Controls extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        NavButton(label: 'Précédent', icon: Icons.arrow_back_ios_new_rounded, onTap: onPrevious),
-        const SizedBox(width: 12),
-        AutoPlayButton(isPlaying: isPlaying, onTap: onToggleAutoPlay),
-        const SizedBox(width: 12),
-        NavButton(label: 'Suivant', icon: Icons.arrow_forward_ios_rounded, onTap: onNext, iconAfter: true),
+        NavButton(
+          label: 'Précédent',
+          icon: Icons.arrow_back_ios_new_rounded,
+          onTap: onPrevious,
+        ),
+        const SizedBox(width: 14),
+        AutoPlayButton(
+          isPlaying: isPlaying,
+          onTap: onToggleAutoPlay,
+        ),
+        const SizedBox(width: 14),
+        NavButton(
+          label: 'Suivant',
+          icon: Icons.arrow_forward_ios_rounded,
+          onTap: onNext,
+          iconAfter: true,
+        ),
       ],
     );
   }
@@ -135,18 +180,18 @@ class CircleButton extends StatelessWidget {
             height: size,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: filled
-                  ? const LinearGradient(colors: [AppColors.goldLight, AppColors.gold])
-                  : null,
-              color: filled ? null : AppColors.surfaceAlt,
+              gradient: filled ? AppColors.goldGradient : null,
+              color: filled ? null : AppColors.surfaceAlt.withValues(alpha: 0.7),
               border: Border.all(
-                color: filled ? AppColors.goldLight : Colors.white.withValues(alpha: 0.14),
+                color: filled ? AppColors.goldLight : AppColors.glassBorder,
                 width: 1.2,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.gold.withValues(alpha: filled ? 0.35 : 0.0),
-                  blurRadius: 14,
+                  color: filled
+                      ? AppColors.gold.withValues(alpha: 0.4)
+                      : Colors.black.withValues(alpha: 0.3),
+                  blurRadius: filled ? 16 : 8,
                   offset: const Offset(0, 3),
                 ),
               ],
@@ -154,7 +199,7 @@ class CircleButton extends StatelessWidget {
             child: Icon(
               icon,
               size: size * 0.44,
-              color: filled ? Colors.black87 : AppColors.goldLight,
+              color: filled ? AppColors.bgDark : AppColors.goldLight,
             ),
           ),
         ),
@@ -174,26 +219,29 @@ class AutoPlayButton extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap,
+        onTap: () {
+          HapticFeedback.lightImpact();
+          onTap();
+        },
         borderRadius: BorderRadius.circular(30),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 11),
           decoration: BoxDecoration(
-            gradient: isPlaying
-                ? const LinearGradient(colors: [AppColors.goldLight, AppColors.gold])
-                : null,
-            color: isPlaying ? null : AppColors.surfaceAlt,
+            gradient: isPlaying ? AppColors.goldGradient : null,
+            color: isPlaying ? null : AppColors.surfaceAlt.withValues(alpha: 0.7),
             borderRadius: BorderRadius.circular(30),
             border: Border.all(
-              color: AppColors.gold.withValues(alpha: isPlaying ? 1.0 : 0.4),
+              color: isPlaying ? AppColors.goldLight : AppColors.glassBorder,
               width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.gold.withValues(alpha: isPlaying ? 0.35 : 0.0),
-                blurRadius: 12,
-                offset: const Offset(0, 2),
+                color: isPlaying
+                    ? AppColors.gold.withValues(alpha: 0.35)
+                    : Colors.black.withValues(alpha: 0.25),
+                blurRadius: isPlaying ? 14 : 8,
+                offset: const Offset(0, 3),
               ),
             ],
           ),
@@ -202,17 +250,17 @@ class AutoPlayButton extends StatelessWidget {
             children: [
               Icon(
                 isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                color: isPlaying ? Colors.black87 : AppColors.goldLight,
+                color: isPlaying ? AppColors.bgDark : AppColors.goldLight,
                 size: 20,
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: 8),
               Text(
                 isPlaying ? 'Arrêter' : 'Défilement auto',
                 style: TextStyle(
-                  color: isPlaying ? Colors.black87 : Colors.white,
-                  fontWeight: FontWeight.bold,
+                  color: isPlaying ? AppColors.bgDark : AppColors.offWhite,
+                  fontWeight: FontWeight.w700,
                   fontSize: 13,
-                  letterSpacing: 0.4,
+                  letterSpacing: 0.5,
                 ),
               ),
             ],
@@ -242,32 +290,42 @@ class NavButton extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap,
+        onTap: () {
+          HapticFeedback.lightImpact();
+          onTap();
+        },
         borderRadius: BorderRadius.circular(30),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
           decoration: BoxDecoration(
-            color: AppColors.surfaceAlt,
+            color: AppColors.surfaceAlt.withValues(alpha: 0.7),
             borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+            border: Border.all(color: AppColors.glassBorder, width: 1.2),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.25),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (!iconAfter) ...[
                 Icon(icon, size: 14, color: AppColors.goldLight),
-                const SizedBox(width: 6),
+                const SizedBox(width: 8),
               ],
               Text(
                 label,
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: AppColors.offWhite,
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
                 ),
               ),
               if (iconAfter) ...[
-                const SizedBox(width: 6),
+                const SizedBox(width: 8),
                 Icon(icon, size: 14, color: AppColors.goldLight),
               ],
             ],

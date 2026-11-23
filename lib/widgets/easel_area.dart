@@ -36,10 +36,18 @@ class EaselArea extends StatelessWidget {
           final availH = constraints.maxHeight * 0.99;
           final w = math.max(220.0, math.min(availH, availW / 0.68));
           final h = w * 0.68;
-          return Center(child: PageFrame(w: w, h: h, rotated: true, pageController: pageController, onPageChanged: onPageChanged));
+          return Center(
+            child: PageFrame(
+              w: w,
+              h: h,
+              rotated: true,
+              pageController: pageController,
+              onPageChanged: onPageChanged,
+            ),
+          );
         }
 
-        final maxWidth = constraints.maxWidth * (compact ? 0.96 : 0.90);
+        final maxWidth = constraints.maxWidth * (compact ? 0.96 : 0.88);
         final maxHeight = (constraints.maxHeight - (compact ? 64 : 80)) / 0.68;
         final w = math.max(220.0, math.min(math.min(maxWidth, maxHeight), 780.0));
         final h = w * 0.68;
@@ -48,7 +56,13 @@ class EaselArea extends StatelessWidget {
           return Center(
             child: ValueListenableBuilder<Offset>(
               valueListenable: tilt,
-              builder: (_, t, _) => _EaselWithParallax(w: w, h: h, tilt: t, pageController: pageController, onPageChanged: onPageChanged),
+              builder: (_, t, _) => _EaselWithParallax(
+                w: w,
+                h: h,
+                tilt: t,
+                pageController: pageController,
+                onPageChanged: onPageChanged,
+              ),
             ),
           );
         }
@@ -66,10 +80,15 @@ class EaselArea extends StatelessWidget {
               builder: (_, t, _) {
                 return TweenAnimationBuilder<Offset>(
                   tween: Tween(end: t),
-                  duration: const Duration(milliseconds: 180),
-                  curve: Curves.easeOut,
-                  builder: (_, animated, _) =>
-                      _EaselWithParallax(w: w, h: h, tilt: animated, pageController: pageController, onPageChanged: onPageChanged),
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOutCubic,
+                  builder: (_, animated, _) => _EaselWithParallax(
+                    w: w,
+                    h: h,
+                    tilt: animated,
+                    pageController: pageController,
+                    onPageChanged: onPageChanged,
+                  ),
                 );
               },
             ),
@@ -100,10 +119,11 @@ class _EaselWithParallax extends StatelessWidget {
     final dx = tilt.dx;
     final dy = tilt.dy;
 
+    // 2.5D Perspective Transformation Matrix
     final matrix = Matrix4.identity()
       ..setEntry(3, 2, 0.00085)
-      ..rotateX(-0.07 - dy * 0.11)
-      ..rotateY(dx * 0.14);
+      ..rotateX(-0.06 - dy * 0.12)
+      ..rotateY(dx * 0.15);
 
     return Transform(
       alignment: Alignment.center,
@@ -111,16 +131,19 @@ class _EaselWithParallax extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Top Metallic Spiral Rings with Parallax Offset
           Transform.translate(
-            offset: Offset(dx * 20, dy * 18),
+            offset: Offset(dx * 22, dy * 20),
             child: SizedBox(
               width: w * 0.90,
-              height: 24,
+              height: 26,
               child: SpiralRings(ringsCount: w < 340 ? 12 : 16),
             ),
           ),
+
+          // Main Calendar Page Frame with Mid Parallax Offset
           Transform.translate(
-            offset: Offset(dx * 12, dy * 14),
+            offset: Offset(dx * 14, dy * 15),
             child: PageFrame(
               w: w,
               h: h,
@@ -129,31 +152,35 @@ class _EaselWithParallax extends StatelessWidget {
               onPageChanged: onPageChanged,
             ),
           ),
+
+          // 2.5D Easel Stand Base & Layered Metallic Gold Shadows
           Transform.translate(
-            offset: Offset(dx * 5, dy * 7),
+            offset: Offset(dx * 6, dy * 8),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 CustomPaint(
-                  size: Size(w * 0.94, 20),
+                  size: Size(w * 0.94, 22),
                   painter: EaselFootPainter(),
                 ),
                 Container(
-                  width: w * 0.82,
-                  height: 10,
+                  width: w * 0.84,
+                  height: 12,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
                     boxShadow: [
+                      // Deep Floor Contact Shadow
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.55 + dy.abs() * 0.25),
-                        blurRadius: 18 + dy.abs() * 14,
+                        color: Colors.black.withValues(alpha: 0.6 + dy.abs() * 0.2),
+                        blurRadius: 20 + dy.abs() * 12,
                         spreadRadius: 2,
-                        offset: Offset(-dx * 10, 4 + dy * 6),
+                        offset: Offset(-dx * 12, 5 + dy * 6),
                       ),
+                      // Soft Ambient Gold Glow
                       BoxShadow(
-                        color: AppColors.gold.withValues(alpha: 0.06 + dx.abs() * 0.08),
-                        blurRadius: 22,
-                        offset: Offset(dx * 4, 2),
+                        color: AppColors.gold.withValues(alpha: 0.12 + dx.abs() * 0.08),
+                        blurRadius: 24,
+                        offset: Offset(dx * 4, 3),
                       ),
                     ],
                   ),

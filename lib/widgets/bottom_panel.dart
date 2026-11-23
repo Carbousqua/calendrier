@@ -38,7 +38,7 @@ class BottomPanel extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         MonthTitle(currentMonth: currentMonth, currentIndex: currentIndex),
-        SizedBox(height: compact ? 14 : 12),
+        SizedBox(height: compact ? 12 : 10),
         Controls(
           compact: compact,
           isPlaying: isPlaying,
@@ -46,14 +46,14 @@ class BottomPanel extends StatelessWidget {
           onNext: onNext,
           onToggleAutoPlay: onToggleAutoPlay,
         ),
-        SizedBox(height: compact ? 14 : 12),
+        SizedBox(height: compact ? 12 : 10),
         MonthSelector(
           compact: compact,
           currentIndex: currentIndex,
           chipsController: chipsController,
           onGoTo: onGoTo,
         ),
-        if (compact) Hint(rotated: rotated, show: showHint) else const SizedBox(height: 12),
+        if (compact) Hint(rotated: rotated, show: showHint) else const SizedBox(height: 10),
       ],
     );
   }

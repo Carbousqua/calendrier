@@ -21,39 +21,79 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Royal Blue & Gold Crest Logo with Ambient Aura Glow
     final logo = Container(
-      padding: const EdgeInsets.all(7),
-      decoration: const BoxDecoration(
+      padding: const EdgeInsets.all(2),
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: [AppColors.goldLight, AppColors.goldDeep],
+        gradient: AppColors.goldGradient,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gold.withValues(alpha: 0.35),
+            blurRadius: 12,
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(7),
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: AppColors.royalGradient,
+        ),
+        child: const Icon(
+          Icons.calendar_month_rounded,
+          size: 18,
+          color: AppColors.goldLight,
         ),
       ),
-      child: const Icon(Icons.calendar_month, size: 18, color: Colors.black87),
     );
 
     if (compact) {
       return Padding(
-        padding: const EdgeInsets.fromLTRB(8, 6, 8, 2),
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
         child: Row(
           children: [
+            // Gyro Toggle Button
             Tooltip(
               message: useGyro ? 'Désactiver gyroscope' : 'Activer gyroscope',
-              child: IconButton(
-                onPressed: onToggleGyro,
-                style: IconButton.styleFrom(
-                  backgroundColor: useGyro
-                      ? AppColors.gold.withValues(alpha: 0.25)
-                      : AppColors.surface,
-                  fixedSize: const Size(44, 44),
-                  side: BorderSide(color: AppColors.gold.withValues(alpha: 0.45)),
-                ),
-                icon: Icon(
-                  useGyro
-                      ? Icons.screen_rotation_rounded
-                      : Icons.screen_lock_rotation_rounded,
-                  size: 22,
-                  color: AppColors.goldLight,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: onToggleGyro,
+                  borderRadius: BorderRadius.circular(14),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 250),
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: useGyro
+                          ? AppColors.gold.withValues(alpha: 0.18)
+                          : AppColors.surfaceAlt.withValues(alpha: 0.6),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: useGyro
+                            ? AppColors.gold
+                            : AppColors.glassBorder,
+                        width: 1.2,
+                      ),
+                      boxShadow: useGyro
+                          ? [
+                              BoxShadow(
+                                color: AppColors.gold.withValues(alpha: 0.25),
+                                blurRadius: 10,
+                              )
+                            ]
+                          : [],
+                    ),
+                    child: Icon(
+                      useGyro
+                          ? Icons.screen_rotation_rounded
+                          : Icons.screen_lock_rotation_rounded,
+                      size: 20,
+                      color: useGyro ? AppColors.goldLight : AppColors.textSecondary,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -63,16 +103,20 @@ class Header extends StatelessWidget {
                 children: [
                   logo,
                   const SizedBox(width: 10),
-                  const Flexible(
-                    child: Text(
-                      'DILI PRESTIGE',
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontFamily: 'serif',
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 2,
-                        color: AppColors.goldLight,
+                  Flexible(
+                    child: ShaderMask(
+                      shaderCallback: (bounds) =>
+                          AppColors.goldShineGradient.createShader(bounds),
+                      child: const Text(
+                        'DILI PRESTIGE',
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: 'serif',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 2.5,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
@@ -82,63 +126,106 @@ class Header extends StatelessWidget {
             if (canRotate)
               Tooltip(
                 message: rotated ? 'Vue normale' : 'Agrandir (pivoter)',
-                child: IconButton(
-                  onPressed: onToggleRotated,
-                  style: IconButton.styleFrom(
-                    backgroundColor: rotated ? AppColors.gold : AppColors.surface,
-                    fixedSize: const Size(44, 44),
-                    side: BorderSide(color: AppColors.gold.withValues(alpha: 0.45)),
-                  ),
-                  icon: Icon(
-                    rotated
-                        ? Icons.fullscreen_exit_rounded
-                        : Icons.screen_rotation_alt_rounded,
-                    size: 22,
-                    color: rotated ? Colors.black87 : AppColors.goldLight,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: onToggleRotated,
+                    borderRadius: BorderRadius.circular(14),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        gradient: rotated ? AppColors.goldGradient : null,
+                        color: rotated ? null : AppColors.surfaceAlt.withValues(alpha: 0.6),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: rotated ? AppColors.goldLight : AppColors.glassBorder,
+                          width: 1.2,
+                        ),
+                        boxShadow: rotated
+                            ? [
+                                BoxShadow(
+                                  color: AppColors.gold.withValues(alpha: 0.35),
+                                  blurRadius: 12,
+                                )
+                              ]
+                            : [],
+                      ),
+                      child: Icon(
+                        rotated
+                            ? Icons.fullscreen_exit_rounded
+                            : Icons.screen_rotation_alt_rounded,
+                        size: 20,
+                        color: rotated ? Colors.black87 : AppColors.goldLight,
+                      ),
+                    ),
                   ),
                 ),
               )
             else
-              const SizedBox(width: 48),
+              const SizedBox(width: 44),
           ],
         ),
       );
     }
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 6),
       child: Wrap(
         alignment: WrapAlignment.center,
         crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 12,
-        runSpacing: 6,
+        spacing: 16,
+        runSpacing: 8,
         children: [
           logo,
-          const Text(
-            'DILI PRESTIGE',
-            style: TextStyle(
-              fontFamily: 'serif',
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 2.2,
-              color: AppColors.goldLight,
+          ShaderMask(
+            shaderCallback: (bounds) =>
+                AppColors.goldShineGradient.createShader(bounds),
+            child: const Text(
+              'DILI PRESTIGE',
+              style: TextStyle(
+                fontFamily: 'serif',
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 3.2,
+                color: Colors.white,
+              ),
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
             decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.gold.withValues(alpha: 0.4)),
-            ),
-            child: const Text(
-              'CALENDRIER DE BUREAU',
-              style: TextStyle(
-                fontSize: 11,
-                letterSpacing: 1.6,
-                fontWeight: FontWeight.w700,
-                color: AppColors.goldLight,
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.royalBlue.withValues(alpha: 0.4),
+                  AppColors.surface.withValues(alpha: 0.8),
+                ],
               ),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: AppColors.glassBorder, width: 1),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.royalBlue.withValues(alpha: 0.2),
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.star_rounded, size: 12, color: AppColors.goldLight),
+                SizedBox(width: 6),
+                Text(
+                  'CALENDRIER DE BUREAU DE LUXE',
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    letterSpacing: 1.8,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.goldLight,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

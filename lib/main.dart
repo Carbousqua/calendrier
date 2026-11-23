@@ -48,13 +48,15 @@ class DiliPrestigeCalendarApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: AppColors.bg,
+        scaffoldBackgroundColor: AppColors.bgDark,
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.gold,
           brightness: Brightness.dark,
           primary: AppColors.goldLight,
+          secondary: AppColors.royalBlueLight,
           surface: AppColors.surface,
         ),
+        fontFamily: 'sans-serif',
         useMaterial3: true,
       ),
       home: const CalendarPresentationPage(),

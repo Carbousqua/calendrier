@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../models/month_data.dart';
 import '../theme/app_colors.dart';
 
@@ -19,13 +20,13 @@ class MonthSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: compact ? 46 : 40,
+      height: compact ? 48 : 42,
       child: ListView.builder(
         controller: chipsController,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        itemExtent: 66,
+        itemExtent: 68,
         itemCount: calendarMonths.length,
         itemBuilder: (context, i) {
           final isSelected = i == currentIndex;
@@ -33,29 +34,41 @@ class MonthSelector extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () => onGoTo(i),
+              onTap: () {
+                HapticFeedback.selectionClick();
+                onGoTo(i);
+              },
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 240),
+                curve: Curves.easeOutCubic,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  gradient: isSelected
-                      ? const LinearGradient(colors: [AppColors.goldLight, AppColors.gold])
-                      : null,
-                  color: isSelected ? null : AppColors.surface,
+                  gradient: isSelected ? AppColors.goldGradient : null,
+                  color: isSelected ? null : AppColors.surfaceAlt.withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected
                         ? AppColors.goldLight
-                        : Colors.white.withValues(alpha: 0.08),
+                        : AppColors.glassBorder.withValues(alpha: 0.15),
+                    width: isSelected ? 1.4 : 1.0,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: isSelected
+                          ? AppColors.gold.withValues(alpha: 0.35)
+                          : Colors.black.withValues(alpha: 0.15),
+                      blurRadius: isSelected ? 10 : 4,
+                      offset: Offset(0, isSelected ? 3 : 1),
+                    ),
+                  ],
                 ),
                 child: Text(
                   calendarMonths[i].shortName,
                   style: TextStyle(
                     fontSize: 12,
-                    letterSpacing: 0.5,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                    color: isSelected ? Colors.black87 : Colors.white70,
+                    letterSpacing: 0.8,
+                    fontWeight: isSelected ? FontWeight.w900 : FontWeight.w500,
+                    color: isSelected ? AppColors.bgDark : AppColors.offWhite,
                   ),
                 ),
               ),
