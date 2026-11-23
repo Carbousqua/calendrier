@@ -178,11 +178,15 @@ class _CalendarPresentationPageState extends State<CalendarPresentationPage>
 
   // ───────── Gyro ─────────
   void _startGyro() {
+    _gyro.onFlickNext = _next;
+    _gyro.onFlickPrevious = _previous;
     _gyro.start();
     _gyro.tilt.addListener(_onGyroTilt);
   }
 
   void _stopGyro() {
+    _gyro.onFlickNext = null;
+    _gyro.onFlickPrevious = null;
     _gyro.tilt.removeListener(_onGyroTilt);
     _gyro.stop();
   }

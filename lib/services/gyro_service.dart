@@ -7,24 +7,30 @@ class GyroService {
   StreamSubscription<AccelerometerEvent>? _accelSub;
   Timer? _smoothTimer;
 
+  VoidCallback? onFlickNext;
+  VoidCallback? onFlickPrevious;
+
   final ValueNotifier<Offset> tilt = ValueNotifier(Offset.zero);
 
   Offset _gyroTarget = Offset.zero;
   Offset _accelTarget = Offset.zero;
   Offset _current = Offset.zero;
 
+  int _lastFlickTimestamp = 0;
+
   static const double _gyroSens = 0.022;
   static const double _accelSens = 0.45;
   static const double _max = 0.75;
   static const double _lerp = 0.16;
   static const double _decay = 0.030;
+  static const double _flickThreshold = 2.2; // rad/s threshold for motion gesture
 
   bool get isActive => _gyroSub != null || _accelSub != null;
 
   void start() {
     if (isActive) return;
 
-    // 1. Gyroscope Stream (Dynamic rotational velocity)
+    // 1. Gyroscope Stream (Dynamic rotational velocity & Motion Flick Gestures)
     try {
       _gyroSub = gyroscopeEventStream(
         samplingPeriod: SensorInterval.gameInterval,
@@ -34,6 +40,18 @@ class GyroService {
             (_gyroTarget.dx + event.y * _gyroSens).clamp(-_max, _max),
             (_gyroTarget.dy - event.x * _gyroSens).clamp(-_max, _max),
           );
+
+          // Motion Gesture: Flick phone right/left to change month
+          final now = DateTime.now().millisecondsSinceEpoch;
+          if (now - _lastFlickTimestamp > 500) {
+            if (event.y > _flickThreshold) {
+              _lastFlickTimestamp = now;
+              onFlickNext?.call();
+            } else if (event.y < -_flickThreshold) {
+              _lastFlickTimestamp = now;
+              onFlickPrevious?.call();
+            }
+          }
         },
         onError: (_) => _stopGyroStream(),
       );
@@ -45,7 +63,6 @@ class GyroService {
         samplingPeriod: SensorInterval.gameInterval,
       ).listen(
         (event) {
-          // Normalize X & Y gravity tilt (-9.8 to +9.8) to offset (-1.0 to +1.0)
           final tx = (event.x / 7.0).clamp(-1.0, 1.0) * _accelSens;
           final ty = ((event.y - 4.0) / 7.0).clamp(-1.0, 1.0) * _accelSens;
           _accelTarget = Offset(tx.clamp(-_max, _max), ty.clamp(-_max, _max));
